@@ -1,5 +1,4 @@
 let tanggal = document.getElementById("date");
-// Perbaikan 1: Ambil elemennya saja, jangan ambil teks/value-nya dulu di sini
 let taskInput = document.getElementById("task-input");
 let taskDeadline = document.getElementById("task-deadline");
 let btnAddTask = document.getElementById("submit-task");
@@ -8,7 +7,23 @@ let semuaTombolPrio = document.querySelectorAll(".btn-prio");
 let prioritasTerpilih = "Low";
 let doneColums = document.getElementById("done-column");
 let ClearAllTask = document.getElementById("clear-all-btn");
+let displayNama = document.getElementById("nama");
+let displayKerja = document.getElementById("pekerjaan");
+let avatar = document.getElementById("avatar");
 
+let namaBaru = prompt("Masukkan Nama Baru");
+let perkerjaan = prompt("Masukkan Perkerjaan Mu...");
+let avatarBaru = prompt("Masukkan Link Foto Kamu");
+
+if (namaBaru) {
+  displayNama.innerText = namaBaru;
+}
+if (perkerjaan) {
+  displayKerja.innerText = perkerjaan;
+}
+if (avatarBaru) {
+  avatar.src = avatarBaru;
+}
 // --- LOGIKA TANGGAL & WAKTU ---
 function updateWaktu() {
   const sekarang = new Date();
@@ -34,7 +49,7 @@ function updateWaktu() {
 setInterval(updateWaktu, 1000);
 updateWaktu();
 // --- AKHIR LOGIKA TANGGAL ---
-// --- Logika Prio---
+// --- LOGIKA PRIORITAS---
 for (let tombol of semuaTombolPrio) {
   tombol.addEventListener("click", function () {
     document.querySelector(".btn-prio.active").classList.remove("active");
@@ -64,14 +79,21 @@ function addTask() {
     year: "numeric",
   };
 
-  let deadline = new Date(deadlineRaw).toLocaleDateString("id-ID", opsiTanggal);
+  let tanggalDeadline = new Date(deadlineRaw);
+  tanggalDeadline.setHours(0, 0, 0, 0);
+
+  let tanggalHariIni = new Date();
+  tanggalHariIni.setHours(0, 0, 0, 0);
+  let deadline = tanggalDeadline.toLocaleDateString("id-ID", opsiTanggal);
+
+  let statusTeks = `⏳ Tanggal: ${deadline}`;
+  if (tanggalHariIni > tanggalDeadline) {
+    statusTeks = `❌ Batas: ${deadline} | <span style="color: red; font-weight: bold;">Terlambat!</span>`;
+  }
   // Membuat element kotak tugas baru
   let kotakTugasBaru = document.createElement("div"); // Menggunakan 'div' huruf kecil
   kotakTugasBaru.className = "task-item";
-
-  // Set attribute (Perbaikan salah ketik data-deadline)
   kotakTugasBaru.setAttribute("data-prio", prioritasTerpilih);
-  kotakTugasBaru.setAttribute("data-deadline", deadline);
 
   // Mengisi struktur HTML internal kotak tugas baru
   // Perbaikan: mengubah ${taskInput} menjadi ${task}
@@ -83,7 +105,7 @@ function addTask() {
       />
       <div class="task-details">
         <span class="task-text">${task}</span>
-        <span class="task-time">⏳ Tanggal: ${deadline} | Prio: ${prioritasTerpilih}</span>
+        <span class="task-time">${statusTeks} | Prio: ${prioritasTerpilih}</span>
       </div>
     </div>
     <button class="delete-btn">Hapus</button>
@@ -123,7 +145,7 @@ doneColums.addEventListener("click", function (event) {
   }
 });
 // ---selesai
-
+//  logika botton hapus
 function hapusTugas(event) {
   if (event.target.classList.contains("delete-btn")) {
     let itemTugas = event.target.closest(".task-item");
@@ -133,7 +155,7 @@ function hapusTugas(event) {
 
 todoColum.addEventListener("click", hapusTugas);
 doneColums.addEventListener("click", hapusTugas);
-
+// logika button hapus all
 ClearAllTask.addEventListener("click", function () {
   let konfirmasi = confirm("Apakah kamu yakin ingin menghapus semua tugas?");
   if (konfirmasi) {
