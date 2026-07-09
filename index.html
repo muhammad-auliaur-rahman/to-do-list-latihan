@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./style.css" rel="stylesheet" />
+    <title>To Do List</title>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="container-profil">
+          <img src="img/profil.png" alt="foto-profil" />
+          <div class="profil">
+            <h3>Muhammad Auliaur Rahman</h3>
+            <span>Student in Harisenin.com</span>
+          </div>
+        </div>
+
+        <div><span class="logo">To Do</span></div>
+      </header>
+
+      <main>
+        <div class="display-date">
+          <h3 id="date">Tanggal Hari ini</h3>
+        </div>
+        <div class="blok-main">
+          <h3>Tulis Tugas Baru</h3>
+          <textarea
+            name="task"
+            id="task-input"
+            placeholder="Tulis Tugas Kamu disini..."
+          ></textarea>
+        </div>
+        <div class="blok-main">
+          <h3>Atur Tanggal dan batas waktu</h3>
+          <input type="date" id="task-deadline" class="date-input" />
+        </div>
+
+        <div class="blok-main">
+          <h3>Level Prioritas</h3>
+          <div class="bungkus-btn">
+            <button class="btn-prio active" data-prio="Low">Low</button>
+            <button class="btn-prio" data-prio="Medium">Medium</button>
+            <button class="btn-prio" data-prio="High">High</button>
+          </div>
+        </div>
+
+        <button class="btn-submit" id="submit-task">Submit Agenda</button>
+      </main>
+
+      <section class="kolom-bawah">
+        <div class="section-judul">
+          <h3>🕒 Kolom To Do</h3>
+        </div>
+        <div class="task-list" id="todo-column">
+          <div class="task-item" data-prio="High">
+            <div class="task-left">
+              <input type="checkbox" name="" class="checkbox-container" />
+              <div class="task-details">
+                <span class="task-text">HTML CSS</span>
+                <span class="task-time">⏳ Sisa: 02j 15m | Prio: High</span>
+              </div>
+            </div>
+            <button class="delete-btn">Hapus</button>
+          </div>
+        </div>
+
+        <div class="section-judul">
+          <h3>✅ Kolom Done</h3>
+        </div>
+        <div class="task-list" id="done-column">
+          <div class="task-item" data-prio="Low">
+            <div class="task-left">
+              <input type="checkbox" name="" class="checkbox-container" />
+              <div class="task-details">
+                <span class="task-text"
+                  >HTML CSS: Selesaikan layout Flexbox</span
+                >
+                <span class="task-time">⏳ Sisa: 02j 15m | Prio: High</span>
+              </div>
+            </div>
+            <button class="delete-btn">Hapus</button>
+          </div>
+          <div class="task-item" data-prio="Medium">
+            <div class="task-left">
+              <input type="checkbox" name="" class="checkbox-container" />
+              <div class="task-details">
+                <span class="task-text"
+                  >HTML CSS: Selesaikan layout Flexbox</span
+                >
+                <span class="task-time">⏳ Sisa: 02j 15m | Prio: High</span>
+              </div>
+            </div>
+            <button class="delete-btn">Hapus</button>
+          </div>
+        </div>
+
+        <div class="btn-hapus">
+          <button class="clear-btn" id="clear-all-btn">
+            🗑️ Button Delete All
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
