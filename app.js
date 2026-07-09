@@ -47,17 +47,24 @@ for (let tombol of semuaTombolPrio) {
 function addTask() {
   // Ambil value/nilai input tepat SAAT tombol diklik
   const task = taskInput.value.trim();
-  const deadline = taskDeadline.value;
+  const deadlineRaw = taskDeadline.value;
 
   // Validasi input
   if (task === "") {
     alert("Tugas tidak boleh kosong!");
     return;
-  } else if (deadline === "") {
+  } else if (deadlineRaw === "") {
     alert("Deadline tidak boleh kosong!");
     return;
   }
 
+  let opsiTanggal = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+
+  let deadline = new Date(deadlineRaw).toLocaleDateString("id-ID", opsiTanggal);
   // Membuat element kotak tugas baru
   let kotakTugasBaru = document.createElement("div"); // Menggunakan 'div' huruf kecil
   kotakTugasBaru.className = "task-item";
