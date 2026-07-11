@@ -10,20 +10,89 @@ let ClearAllTask = document.getElementById("clear-all-btn");
 let displayNama = document.getElementById("nama");
 let displayKerja = document.getElementById("pekerjaan");
 let avatar = document.getElementById("avatar");
+let btnEdit = document.getElementById("btn-edit");
+let jendelaProfil = document.getElementById("from-profil");
+let btnClose = document.getElementById("close-jendela");
+let inputNama = document.getElementById("input-nama");
+let inputPekerjaan = document.getElementById("input-pekerjaan");
+let inputFoto = document.getElementById("link-foto");
+let btnSave = document.getElementById("btn-simpan");
 
-let namaBaru = prompt("Masukkan Nama Baru");
-let perkerjaan = prompt("Masukkan Perkerjaan Mu...");
-let avatarBaru = prompt("Masukkan Link Foto Kamu");
+// LOGIKA AGAR INPUT TANGGAL MENGIKUTI HARI SEKARANG
+function resetInputTanggalKeHariIni() {
+  const sekarang = new Date();
+  const tahun = sekarang.getFullYear();
+  const bulan = String(sekarang.getMonth() + 1).padStart(2, "0");
+  const tanggalHari = String(sekarang.getDate()).padStart(2, "0");
 
-if (namaBaru) {
-  displayNama.innerText = namaBaru;
+  // Digabung menjadi format baku HTML: YYYY-MM-DD
+  taskDeadline.value = `${tahun}-${bulan}-${tanggalHari}`;
 }
-if (perkerjaan) {
-  displayKerja.innerText = perkerjaan;
+
+resetInputTanggalKeHariIni();
+
+// ARRAY UTAMA DAN MENAMBAHKAN KE LOKAL STORAGE
+let listTugasLokal = JSON.parse(localStorage.getItem("myTodoList")) || [];
+
+function simpanKeLocalStorage() {
+  localStorage.setItem("myTodoList", JSON.stringify(listTugasLokal));
 }
-if (avatarBaru) {
-  avatar.src = avatarBaru;
+
+let dataProfil = JSON.parse(localStorage.getItem("userProfil")) || {};
+
+function simpanUserData() {
+  localStorage.setItem("userProfil", JSON.stringify(dataProfil));
 }
+// lLOADED PROFIL
+function loadProfil() {
+  if (dataProfil.nama) {
+    displayNama.innerText = dataProfil.nama;
+    displayKerja.innerText = dataProfil.pekerjaan;
+    avatar.src = dataProfil.linkFoto;
+
+    // Isi juga form input-nya supaya pas mau edit tidak kosongan
+    inputNama.value = dataProfil.nama;
+    inputPekerjaan.value = dataProfil.pekerjaan;
+    inputFoto.value = dataProfil.linkFoto;
+  }
+}
+
+// MENGATUR NAMA, PERKERJAAN DAN LINK FOTO DENGAN PROMPT
+function updateProfil() {
+  let namaValue = inputNama.value.trim();
+  let pekerjaanValue = inputPekerjaan.value.trim();
+  let fotoValue = inputFoto.value.trim();
+
+  if (namaValue === "" || pekerjaanValue === "" || fotoValue === "") {
+    alert("Semua data profil harus diisi!");
+    return;
+  }
+
+  dataProfil = {
+    nama: namaValue,
+    pekerjaan: pekerjaanValue,
+    linkFoto: fotoValue,
+  };
+  simpanUserData();
+
+  displayNama.innerText = namaValue;
+  displayKerja.innerText = pekerjaanValue;
+  avatar.src = fotoValue;
+
+  jendelaProfil.classList.remove("active");
+}
+
+btnEdit.addEventListener("click", function () {
+  jendelaProfil.classList.add("active");
+});
+
+btnClose.addEventListener("click", function () {
+  jendelaProfil.classList.remove("active");
+});
+
+btnSave.addEventListener("click", updateProfil);
+
+loadProfil();
 // --- LOGIKA TANGGAL & WAKTU ---
 function updateWaktu() {
   const sekarang = new Date();
@@ -36,12 +105,11 @@ function updateWaktu() {
 
   const formatTanggal = sekarang.toLocaleDateString("id-ID", options);
 
-  const opsiJam = {
+  const jam = sekarang.toLocaleTimeString("id-ID", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-  };
-  const jam = sekarang.toLocaleTimeString("id-ID", opsiJam);
+  });
 
   tanggal.innerText = `${formatTanggal} - Jam ${jam}`;
 }
@@ -56,6 +124,52 @@ for (let tombol of semuaTombolPrio) {
     this.classList.add("active");
     prioritasTerpilih = this.getAttribute("data-prio");
   });
+}
+// buat elemen tugas (Fungsi Dom berjalan disini)
+function buatElementTugas(tugas) {
+  let opsiTanggal = {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  };
+  // mengatur deadline
+  let tanggalDeadline = new Date(tugas.deadline);
+  tanggalDeadline.setHours(0, 0, 0, 0);
+
+  let tanggalHariIni = new Date();
+  tanggalHariIni.setHours(0, 0, 0, 0);
+
+  let deadline = tanggalDeadline.toLocaleDateString("id-ID", opsiTanggal);
+  let statusTeks = `⏳ Batas: ${deadline}`;
+  if (tanggalHariIni > tanggalDeadline) {
+    statusTeks = `❌ Batas: ${deadline} | <span style="color: red; font-weight: bold;">Terlambat!</span>`;
+  }
+  // Membuat element kotak tugas baru
+  let kotakTugasBaru = document.createElement("div"); // Menggunakan 'div' huruf kecil
+  kotakTugasBaru.className = "task-item";
+  kotakTugasBaru.setAttribute("data-prio", tugas.prio);
+  kotakTugasBaru.setAttribute("data-id", tugas.id);
+
+  // Mengisi struktur HTML internal kotak tugas baru
+  kotakTugasBaru.innerHTML = `
+    <div class="task-left">
+      <input
+        type="checkbox"
+        class="checkbox-container"
+        ${tugas.isChecked ? "checked" : ""}
+      />
+      <div class="task-details">
+        <span class="task-text">${tugas.teks}</span>
+        <span class="task-time">${statusTeks} | Prio: ${tugas.prio}</span>
+      </div>
+    </div>
+    <button class="delete-btn">Hapus</button>
+  `;
+  if (tugas.isChecked) {
+    doneColums.appendChild(kotakTugasBaru);
+  } else {
+    todoColum.appendChild(kotakTugasBaru);
+  }
 }
 
 // --- LOGIKA TAMBAH TUGAS (ADD TASK) ---
@@ -72,51 +186,22 @@ function addTask() {
     alert("Deadline tidak boleh kosong!");
     return;
   }
-
-  let opsiTanggal = {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+  let tugasBaruObjek = {
+    id: Date.now(),
+    teks: task,
+    deadline: deadlineRaw,
+    prio: prioritasTerpilih,
+    isChecked: false,
   };
 
-  let tanggalDeadline = new Date(deadlineRaw);
-  tanggalDeadline.setHours(0, 0, 0, 0);
+  listTugasLokal.push(tugasBaruObjek);
+  simpanKeLocalStorage();
 
-  let tanggalHariIni = new Date();
-  tanggalHariIni.setHours(0, 0, 0, 0);
-  let deadline = tanggalDeadline.toLocaleDateString("id-ID", opsiTanggal);
+  buatElementTugas(tugasBaruObjek);
 
-  let statusTeks = `⏳ Tanggal: ${deadline}`;
-  if (tanggalHariIni > tanggalDeadline) {
-    statusTeks = `❌ Batas: ${deadline} | <span style="color: red; font-weight: bold;">Terlambat!</span>`;
-  }
-  // Membuat element kotak tugas baru
-  let kotakTugasBaru = document.createElement("div"); // Menggunakan 'div' huruf kecil
-  kotakTugasBaru.className = "task-item";
-  kotakTugasBaru.setAttribute("data-prio", prioritasTerpilih);
-
-  // Mengisi struktur HTML internal kotak tugas baru
-  // Perbaikan: mengubah ${taskInput} menjadi ${task}
-  kotakTugasBaru.innerHTML = `
-    <div class="task-left">
-      <input
-        type="checkbox"
-        class="checkbox-container"
-      />
-      <div class="task-details">
-        <span class="task-text">${task}</span>
-        <span class="task-time">${statusTeks} | Prio: ${prioritasTerpilih}</span>
-      </div>
-    </div>
-    <button class="delete-btn">Hapus</button>
-  `;
-
-  // Masukkan tugas baru ke dalam kolom To Do
-  todoColum.appendChild(kotakTugasBaru);
-
-  // Reset input setelah berhasil submit
+  // code reset setelah berhasil submit
   taskInput.value = "";
-  taskDeadline.value = "";
+  resetInputTanggalKeHariIni();
   document.querySelector(".btn-prio.active").classList.remove("active");
   semuaTombolPrio[0].classList.add("active");
   prioritasTerpilih = "Low";
@@ -125,41 +210,59 @@ function addTask() {
 btnAddTask.addEventListener("click", addTask);
 
 // ----akhir logika tambah task
-
-//  awal logika merubah dari to do ke done colum dan sebaliknya
-todoColum.addEventListener("click", function (event) {
-  if (event.target.classList.contains("checkbox-container")) {
-    if (event.target.checked) {
-      let itemTugas = event.target.closest(".task-item");
-      doneColums.appendChild(itemTugas);
-    }
+// muat tugas saat refres / mengambil data
+function muatTugasDariLokalStorage() {
+  for (const tugas of listTugasLokal) {
+    buatElementTugas(tugas);
   }
-});
-
-doneColums.addEventListener("click", function (event) {
+}
+muatTugasDariLokalStorage();
+// checbox
+function handleCheckbox(event) {
   if (event.target.classList.contains("checkbox-container")) {
-    if (!event.target.checked) {
-      let itemTugas = event.target.closest(".task-item");
+    let itemTugas = event.target.closest(".task-item");
+    let idTugas = Number(itemTugas.getAttribute("data-id"));
+
+    for (let tugas of listTugasLokal) {
+      if (tugas.id === idTugas) {
+        tugas.isChecked = event.target.checked;
+        break;
+      }
+    }
+    simpanKeLocalStorage();
+
+    if (event.target.checked) {
+      doneColums.appendChild(itemTugas);
+    } else {
       todoColum.appendChild(itemTugas);
     }
   }
-});
+}
+todoColum.addEventListener("click", handleCheckbox);
+doneColums.addEventListener("click", handleCheckbox);
 // ---selesai
-//  logika botton hapus
+// --- hapus tugas
+
 function hapusTugas(event) {
   if (event.target.classList.contains("delete-btn")) {
     let itemTugas = event.target.closest(".task-item");
+    let idTugas = Number(itemTugas.getAttribute("data-id"));
+    listTugasLokal = listTugasLokal.filter((tugas) => tugas.id !== idTugas);
+    simpanKeLocalStorage();
     itemTugas.remove();
   }
 }
-
 todoColum.addEventListener("click", hapusTugas);
 doneColums.addEventListener("click", hapusTugas);
 // logika button hapus all
 ClearAllTask.addEventListener("click", function () {
   let konfirmasi = confirm("Apakah kamu yakin ingin menghapus semua tugas?");
   if (konfirmasi) {
+    listTugasLokal = [];
+    simpanKeLocalStorage();
     doneColums.innerHTML = "";
     todoColum.innerHTML = "";
   }
 });
+
+// LOGIKA UNTUK DATA PROFIL

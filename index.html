@@ -15,9 +15,44 @@
             <h3 id="nama">Muhammad Auliaur Rahman</h3>
             <span id="pekerjaan">Student in Harisenin.com</span>
           </div>
+
+          <div class="container-data-profil" id="from-profil">
+            <button id="close-jendela">Close</button>
+            <h3>Masukkan Profil Kamu</h3>
+            <form action="#" class="form-input-profil">
+              <label for="input-nama">Siapa Nama Kamu </label>
+              <input
+                type="text"
+                name="nama"
+                id="input-nama"
+                placeholder="Masukkan Nama kamu"
+                required
+              />
+
+              <label for="input-pekerjaan">Apa pekerjaan kamu</label>
+              <input
+                type="text"
+                name="pekerjaan"
+                id="input-pekerjaan"
+                placeholder="Masukkan nama pekerjaan mu"
+                required
+              />
+
+              <label for="link-foto">Masukkan link foto kamu</label>
+              <input
+                type="text"
+                name="link"
+                id="link-foto"
+                placeholder="Masukkan Link foto kamu dari drive"
+                required
+              />
+
+              <button type="button" id="btn-simpan">Simpan Data</button>
+            </form>
+          </div>
         </div>
 
-        <div><span class="logo">To Do</span></div>
+        <div class="btn-profil"><button id="btn-edit">Edit</button></div>
       </header>
 
       <main>
@@ -33,7 +68,7 @@
           ></textarea>
         </div>
         <div class="blok-main">
-          <h3>Atur Tanggal dan batas waktu</h3>
+          <h3>Atur Tanggal</h3>
           <input type="date" id="task-deadline" class="date-input" />
         </div>
 
