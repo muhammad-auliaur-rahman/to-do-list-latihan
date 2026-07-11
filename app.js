@@ -63,11 +63,13 @@ function updateProfil() {
   let pekerjaanValue = inputPekerjaan.value.trim();
   let fotoValue = inputFoto.value.trim();
 
-  if (namaValue === "" || pekerjaanValue === "" || fotoValue === "") {
+  if (namaValue === "" || pekerjaanValue === "") {
     alert("Semua data profil harus diisi!");
     return;
   }
-
+  if (fotoValue === "") {
+    fotoValue = avatar.getAttribute("src");
+  }
   dataProfil = {
     nama: namaValue,
     pekerjaan: pekerjaanValue,
