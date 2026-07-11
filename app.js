@@ -61,27 +61,37 @@ function loadProfil() {
 function updateProfil() {
   let namaValue = inputNama.value.trim();
   let pekerjaanValue = inputPekerjaan.value.trim();
-  let fotoValue = inputFoto.value.trim();
+  let fileFoto = inputFoto.files[0];
 
   if (namaValue === "" || pekerjaanValue === "") {
     alert("Semua data profil harus diisi!");
     return;
   }
-  if (fotoValue === "") {
-    fotoValue = avatar.getAttribute("src");
+
+  function prosesSimpan(fotoSource) {
+    dataProfil = {
+      nama: namaValue,
+      pekerjaan: pekerjaanValue,
+      linkFoto: fotoSource,
+    };
+    simpanUserData();
+    displayNama.innerText = namaValue;
+    displayKerja.innerText = pekerjaanValue;
+    avatar.src = fileFoto;
+
+    jendelaProfil.classList.remove("active");
   }
-  dataProfil = {
-    nama: namaValue,
-    pekerjaan: pekerjaanValue,
-    linkFoto: fotoValue,
-  };
-  simpanUserData();
-
-  displayNama.innerText = namaValue;
-  displayKerja.innerText = pekerjaanValue;
-  avatar.src = fotoValue;
-
-  jendelaProfil.classList.remove("active");
+  if (fileFoto) {
+    let reader = new FileReader();
+    reader.onload = function (e) {
+      let base64Image = e.target.result;
+      prosesSimpan(base64Image);
+    };
+    reader.readAsDataURL(fileFoto);
+  } else {
+    let fotoLama = avatar.getAttribute("src");
+    prosesSimpan(fotoLama);
+  }
 }
 
 btnEdit.addEventListener("click", function () {
