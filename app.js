@@ -32,16 +32,16 @@ function resetInputTanggalKeHariIni() {
 resetInputTanggalKeHariIni();
 
 // ARRAY UTAMA DAN MENAMBAHKAN KE LOKAL STORAGE
-let listTugasLokal = JSON.parse(localStorage.getItem("myTodoList")) || [];
+let listTugasLokal = JSON.parse(sessionStorage.getItem("myTodoList")) || [];
 
 function simpanKeLocalStorage() {
-  localStorage.setItem("myTodoList", JSON.stringify(listTugasLokal));
+  sessionStorage.setItem("myTodoList", JSON.stringify(listTugasLokal));
 }
 
-let dataProfil = JSON.parse(localStorage.getItem("userProfil")) || {};
+let dataProfil = JSON.parse(sessionStorage.getItem("userProfil")) || {};
 
 function simpanUserData() {
-  localStorage.setItem("userProfil", JSON.stringify(dataProfil));
+  sessionStorage.setItem("userProfil", JSON.stringify(dataProfil));
 }
 // lLOADED PROFIL
 function loadProfil() {
@@ -49,11 +49,6 @@ function loadProfil() {
     displayNama.innerText = dataProfil.nama;
     displayKerja.innerText = dataProfil.pekerjaan;
     avatar.src = dataProfil.linkFoto;
-
-    // Isi juga form input-nya supaya pas mau edit tidak kosongan
-    inputNama.value = dataProfil.nama;
-    inputPekerjaan.value = dataProfil.pekerjaan;
-    inputFoto.value = dataProfil.linkFoto;
   }
 }
 
@@ -77,7 +72,7 @@ function updateProfil() {
     simpanUserData();
     displayNama.innerText = namaValue;
     displayKerja.innerText = pekerjaanValue;
-    avatar.src = fileFoto;
+    avatar.src = fotoSource;
 
     jendelaProfil.classList.remove("active");
   }
@@ -229,7 +224,7 @@ function muatTugasDariLokalStorage() {
   }
 }
 muatTugasDariLokalStorage();
-// checbox
+// CHECKBOX CODE
 function handleCheckbox(event) {
   if (event.target.classList.contains("checkbox-container")) {
     let itemTugas = event.target.closest(".task-item");
@@ -276,5 +271,3 @@ ClearAllTask.addEventListener("click", function () {
     todoColum.innerHTML = "";
   }
 });
-
-// LOGIKA UNTUK DATA PROFIL
