@@ -32,16 +32,16 @@ function resetInputTanggalKeHariIni() {
 resetInputTanggalKeHariIni();
 
 // ARRAY UTAMA DAN MENAMBAHKAN KE LOKAL STORAGE
-let listTugasLokal = JSON.parse(sessionStorage.getItem("myTodoList")) || [];
+let listTugasLokal = JSON.parse(localStorage.getItem("myTodoList")) || [];
 
 function simpanKeLocalStorage() {
-  sessionStorage.setItem("myTodoList", JSON.stringify(listTugasLokal));
+  localStorage.setItem("myTodoList", JSON.stringify(listTugasLokal));
 }
 
-let dataProfil = JSON.parse(sessionStorage.getItem("userProfil")) || {};
+let dataProfil = JSON.parse(localStorage.getItem("userProfil")) || {};
 
 function simpanUserData() {
-  sessionStorage.setItem("userProfil", JSON.stringify(dataProfil));
+  localStorage.setItem("userProfil", JSON.stringify(dataProfil));
 }
 // lLOADED PROFIL
 function loadProfil() {
